@@ -182,17 +182,43 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
                 }
             }, inactivityTimeout*1000)
             }
-                };
-            });
+        };
+
+        window.initFillBtn = function(name){
+            // let sel = 
+            // sel.click()
+            // console.log(sel)
+            
+            var testBtn = document.createElement("div")
+            testBtn.style = `cursor: pointer;
+                            background:black;
+                            position:absolute;
+                            width: 100px;
+                            right: 10px;
+                            bottom: 20%;
+                            padding-left: 5px;
+                            font-weight: bold;
+                            color: white
+                            `
+            testBtn.textContent="FILL"
+            document.body.appendChild(testBtn)
+            testBtn.addEventListener("click", () => {
+                //filling inputs here?
+                document.querySelector("#m1 > div > fieldset > div:nth-child(5) > div > input").value = name
+                let sel = document.querySelector("#m1 > div > fieldset > div:nth-child(1) > div > ng-select > div > div > div.ng-input > input[type=text]")
+                console.log(sel)
+            })
+            setTimeout(()=> testBtn.click(), 3000)
+
+        }
+    });
 
     await page.evaluate((embassy, application, name, birthDate, phone, email, empName, passport, numOfApp) => { //+++/*D adatok*/
         initTamperMonkey()
 
-        //console.log(embassy, application, name, birthDate, phone, email, empName, passport, numOfApp)
+        initFillBtn(name)
 
-        let hanoi = "hanoi"
-        let hoChiMinh = "ho chi minh"
-        //ügyintézéseket is kiírni így
+        //console.log(embassy, application, name, birthDate, phone, email, empName, passport, numOfApp)
 
         //if A || B || C
             //fill name...passport
@@ -203,7 +229,8 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
 
             //filling inputs (az a baj h nem lehet normálisan beazonosítani az inputfieldeket so ilyen idiótán kell): 
             //option A: írni helperfunctionöket ? mint getPassportField() stb
-            //option B: kiválasztani az összes INPUTOT vagy LABELT, és LOOPOLNI! csekkolni, hogy mi a címke (name, date of birth) és az alapján kitölteni!
+            // option B: puppeteer xpath? 
+            //option C: kiválasztani az összes INPUTOT vagy LABELT, és LOOPOLNI! csekkolni, hogy mi a címke (name, date of birth) és az alapján kitölteni!
             
             //select dropdown
             //await page.select('#telCountryInput', 'my-value') ?

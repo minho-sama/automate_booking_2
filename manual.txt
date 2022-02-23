@@ -1,1 +1,3 @@
 először is kapcsoljuk ki a tampermonkeyt a b
+
+node install után ujraindítani a gépet
