@@ -1,0 +1,1 @@
+először is kapcsoljuk ki a tampermonkeyt a b
