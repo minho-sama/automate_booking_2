@@ -12,7 +12,7 @@ let parsedWorkbook = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
     browser = await puppeteer.launch( { 
         headless: false,
         ignoreDefaultArgs: ["--disable-extensions"],
-        devtools: true,
+        // devtools: true,
         defaultViewport: null
         // executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
      })
@@ -39,12 +39,7 @@ let parsedWorkbook = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
 async function openTab(embassy, application, name, birthDate, phone, email, empName, passport, numOfApp) {
     const page = await browser.newPage();
 
-    await page.goto('https://konzinfobooking.mfa.gov.hu/home');
-
-    // fill form with puppeteer
-    await page.focus("#m1 > div > fieldset > div:nth-child(9) > div > input")
-    await page.keyboard.type('test54')
-    //
+    await page.goto('');
 
     //init tampermonkey script https://stackoverflow.com/questions/47304665/how-to-pass-a-function-in-puppeteers-evaluate-method
     await page.evaluate(() => {
@@ -188,75 +183,10 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
             }, inactivityTimeout*1000)
             }
         };
-
-        window.initFillBtn = function(name){
-            // let sel = 
-            // sel.click()
-            // console.log(sel)
-            
-            var testBtn = document.createElement("div")
-            testBtn.style = `cursor: pointer;
-                            background:black;
-                            position:absolute;
-                            width: 100px;
-                            right: 10px;
-                            bottom: 20%;
-                            padding-left: 5px;
-                            font-weight: bold;
-                            color: white
-                            `
-            testBtn.textContent="FILL"
-            document.body.appendChild(testBtn)
-            testBtn.addEventListener("click", () => {
-                //filling inputs here?
-                document.querySelector("#m1 > div > fieldset > div:nth-child(5) > div > input").value = name
-                let sel = document.querySelector("#m1 > div > fieldset > div:nth-child(1) > div > ng-select > div > div > div.ng-input > input[type=text]")
-                console.log(sel)
-            })
-            setTimeout(()=> testBtn.click(), 3000)
-
-        }
     });
 
-    await page.evaluate((embassy, application, name, birthDate, phone, email, empName, passport, numOfApp) => { //+++/*D adatok*/
-        initTamperMonkey()
-
-        initFillBtn(name)
-
-        //console.log(embassy, application, name, birthDate, phone, email, empName, passport, numOfApp)
-
-        //if A || B || C
-            //fill name...passport
-            //if(C) fill numOfApp
-        //if D
-            //futtasson le egy teljesen mást
-
-
-            //filling inputs (az a baj h nem lehet normálisan beazonosítani az inputfieldeket so ilyen idiótán kell): 
-            //option A: írni helperfunctionöket ? mint getPassportField() stb
-            // option B: puppeteer xpath? 
-            //option C: kiválasztani az összes INPUTOT vagy LABELT, és LOOPOLNI! csekkolni, hogy mi a címke (name, date of birth) és az alapján kitölteni!
-            
-            //select dropdown
-            //await page.select('#telCountryInput', 'my-value') ?
-            //document.querySelector("#a83bdf569556").classList.add("ng-option-selected", "ng-option-marked")
-        
-        /*
-        -A: hanoi emb employment && B: ho chi minh emb family reuni
-            name
-            date of birth
-            phone num
-            email
-            Name of employer
-            Passport number
-        -C: hanoi emb family reunification
-            +number of applicant
-        -D: ho chi minh emb employment + diplomatic legislation
-            //sok
-        */
-
-        //fill out form
-
+    await page.evaluate((embassy, application, name, birthDate, phone, email, empName, passport, numOfApp) => {
+        // initTamperMonkey()
 
     },embassy, application, name, birthDate, phone, email, empName, passport, numOfApp);
 }
