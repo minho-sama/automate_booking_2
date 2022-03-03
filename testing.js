@@ -41,10 +41,27 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
 
     await page.goto('https://konzinfobooking.mfa.gov.hu/home');
 
-    // fill form with puppeteer
-    await page.focus("#m1 > div > fieldset > div:nth-child(9) > div > input")
-    await page.keyboard.type('test54')
-    //
+    //fill with puppeteer, not vanilla
+
+    await page.waitForSelector("#m1 > div > fieldset > div:nth-child(9) > div > input")
+    await page.type("#m1 > div > fieldset > div:nth-child(9) > div > input", email)
+
+    //open embassy list
+    // await page.waitForSelector("#m1 > div > fieldset > div:nth-child(1) > div > ng-select > div > div > div.ng-input > input[type=text]")
+    // await page.click("#m1 > div > fieldset > div:nth-child(1) > div > ng-select > div > div > div.ng-input > input[type=text]")
+
+    await page.waitForSelector("#m1 > div > fieldset > div:nth-child(1) > div > ng-select")
+    await page.click("    #m1 > div > fieldset > div:nth-child(1) > div > ng-select")
+
+    //click on embassy
+    await page.evaluate(() => {
+        document.querySelectorAll(".ng-option").forEach(node => {
+            console.log(node.textContent.trim().split("-")[1])
+        })
+        document.querySelectorAll(".ng-option")[1].click()
+    })
+
+    //fill with puppeteer, not vanilla
 
     //init tampermonkey script https://stackoverflow.com/questions/47304665/how-to-pass-a-function-in-puppeteers-evaluate-method
     await page.evaluate(() => {
@@ -190,9 +207,6 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
         };
 
         window.initFillBtn = function(name){
-            // let sel = 
-            // sel.click()
-            // console.log(sel)
             
             var testBtn = document.createElement("div")
             testBtn.style = `cursor: pointer;
@@ -208,12 +222,15 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
             testBtn.textContent="FILL"
             document.body.appendChild(testBtn)
             testBtn.addEventListener("click", () => {
-                //filling inputs here?
-                document.querySelector("#m1 > div > fieldset > div:nth-child(5) > div > input").value = name
-                let sel = document.querySelector("#m1 > div > fieldset > div:nth-child(1) > div > ng-select > div > div > div.ng-input > input[type=text]")
-                console.log(sel)
+                
+                // fill form inputs
+                // document.querySelector("#m1 > div > fieldset > div:nth-child(5) > div > input").value = name;
+                // document.querySelector("#m1 > div > fieldset > div:nth-child(5) > div > input").dispatchEvent(new Event('input'));
+                // document.querySelector("#m1 > div > fieldset > div:nth-child(5) > div > input").dispatchEvent(new Event('blur'));
+                //ez lehet megbassza az embassy választást
+                //
             })
-            setTimeout(()=> testBtn.click(), 3000)
+            setTimeout(()=> testBtn.click(), 5000)
 
         }
     });
@@ -222,6 +239,8 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
         initTamperMonkey()
 
         initFillBtn(name)
+
+        //after filling, click on START btn
 
         //console.log(embassy, application, name, birthDate, phone, email, empName, passport, numOfApp)
 
