@@ -41,25 +41,52 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
 
     await page.goto('https://konzinfobooking.mfa.gov.hu/home');
 
-    //fill with puppeteer, not vanilla
-
-    await page.waitForSelector("#m1 > div > fieldset > div:nth-child(9) > div > input")
-    await page.type("#m1 > div > fieldset > div:nth-child(9) > div > input", email)
+    //fill with PUPPETEER, not vanilla ? after selecting embassy and stuff
 
     //open embassy list
-    // await page.waitForSelector("#m1 > div > fieldset > div:nth-child(1) > div > ng-select > div > div > div.ng-input > input[type=text]")
-    // await page.click("#m1 > div > fieldset > div:nth-child(1) > div > ng-select > div > div > div.ng-input > input[type=text]")
-
     await page.waitForSelector("#m1 > div > fieldset > div:nth-child(1) > div > ng-select")
-    await page.click("    #m1 > div > fieldset > div:nth-child(1) > div > ng-select")
+    await page.click("#m1 > div > fieldset > div:nth-child(1) > div > ng-select")
 
     //click on embassy
-    await page.evaluate(() => {
-        document.querySelectorAll(".ng-option").forEach(node => {
-            console.log(node.textContent.trim().split("-")[1])
-        })
-        document.querySelectorAll(".ng-option")[1].click()
+    if(embassy === "hanoi") await page.evaluate(()=> {
+        setTimeout(()=> document.querySelectorAll(".ng-option")[75].click(), 1)
     })
+    if(embassy === "ho chi minh") await page.evaluate(()=> {
+        setTimeout(()=> document.querySelectorAll(".ng-option")[76].click(), 1)
+    })
+
+    if(application === "visa employment") await page.evaluate(()=> { // only hanoi
+        let sel = document.querySelector("#m1 > div > fieldset > div:nth-child(3) > div > ng-select > div > div > div.ng-input > input[type=text]");
+        sel.value = 'Visa application'
+        sel.dispatchEvent(new Event('input'));
+        sel.dispatchEvent(new Event('blur'));
+        setTimeout(()=> {
+            Array.from(document.querySelectorAll(".ng-option")).filter((node)=> {
+                return node.textContent.includes("visa") && node.textContent.includes("employment")  && !node.textContent.includes("Diplomatic")
+            })[0].click()
+        }, 1000)
+    })
+
+    console.log(application === "visa family")
+    if(application === "visa family") await page.evaluate(()=> {
+        let sel = document.querySelector("#m1 > div > fieldset > div:nth-child(3) > div > ng-select > div > div > div.ng-input > input[type=text]");
+        sel.value = 'Visa application'
+        sel.dispatchEvent(new Event('input'));
+        sel.dispatchEvent(new Event('blur'));
+        setTimeout(()=> {
+            Array.from(document.querySelectorAll(".ng-option")).filter((node)=> {
+                return node.textContent.includes("visa") && node.textContent.includes("family reunification") && !node.textContent.includes("other")
+            })[0].click()
+            console.log("yeet")
+        }, 1000) 
+    })
+
+    //click on application
+            //ADATOKAT MÁR VANILLA JS-sel kitölteni ?!!! írni helperFunctionöket!!! (getNameInput, get EmailInput, stb) mert más ügyintézésnél más lesz a selector!!!
+
+            // vagy puppeteer
+            // await page.waitForSelector("#m1 > div > fieldset > div:nth-child(9) > div > input")
+            // await page.type("#m1 > div > fieldset > div:nth-child(9) > div > input", email)
 
     //fill with puppeteer, not vanilla
 
@@ -230,15 +257,15 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
                 //ez lehet megbassza az embassy választást
                 //
             })
-            setTimeout(()=> testBtn.click(), 5000)
+            // setTimeout(()=> testBtn.click(), 5000)
 
         }
     });
 
     await page.evaluate((embassy, application, name, birthDate, phone, email, empName, passport, numOfApp) => { //+++/*D adatok*/
-        initTamperMonkey()
+        // initTamperMonkey()
 
-        initFillBtn(name)
+        // initFillBtn(name)
 
         //after filling, click on START btn
 
