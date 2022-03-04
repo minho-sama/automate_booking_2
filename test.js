@@ -12,7 +12,7 @@ let parsedWorkbook = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
     browser = await puppeteer.launch( { 
         headless: false,
         ignoreDefaultArgs: ["--disable-extensions"],
-        devtools: true,
+        // devtools: true,
         defaultViewport: null
         // executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
      })
@@ -67,7 +67,6 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
         }, 1000)
     })
 
-    console.log(application === "visa family")
     if(application === "visa family") await page.evaluate(()=> {
         let sel = document.querySelector("#m1 > div > fieldset > div:nth-child(3) > div > ng-select > div > div > div.ng-input > input[type=text]");
         sel.value = 'Visa application'
@@ -80,6 +79,9 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
             console.log("yeet")
         }, 1000) 
     })
+
+    await page.waitForSelector("#m1 > div > fieldset > div:nth-child(6) > div > div > input")
+    await page.type("#m1 > div > fieldset > div:nth-child(6) > div > div > input", birthDate)
 
     //click on application
             //ADATOKAT MÁR VANILLA JS-sel kitölteni ?!!! írni helperFunctionöket!!! (getNameInput, get EmailInput, stb) mert más ügyintézésnél más lesz a selector!!!
@@ -97,7 +99,7 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
 
             ////////CHANGE ONLY BELOW THAT LINE
 
-            let clickFrequency = 1 //seconds (how often should the program click on "Select date") Recommended is 1 to 5
+            let clickFrequency = 5 //seconds (how often should the program click on "Select date") Recommended is 1 to 5
             let inactivityTimeout = 10 //seconds (how much should the program wait until going back to the first page, if there is an error with booking a date ). Recommended is more than 7
 
             ////////CHANGE ONLY ABOVE THIS LINE
@@ -169,10 +171,10 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
             //main
             function clickSubmitBtn(){
                 console.log("interval started")
-            let mainBtn = document.querySelector(".btn.btn-primary")
+                let mainBtn = document.querySelector(".btn.btn-primary")
 
-            if(mainBtn.attributes.disabled){
-                mainBtn.disabled = false
+            if(mainBtn.disabled){
+                mainBtn.disabled=false
                 console.log("set BTN FROM DISABLED===TRUE TO FALSE")
             }
             mainBtn.click() //submits form
@@ -184,7 +186,7 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
                 stopMonitoring()
                 console.log("success, found időpont")
 
-                setTimeout(() => bookAppointment(), (clickFrequency+1)*1000)
+                setTimeout(() => bookAppointment(), 2000)
             }
             }
 
@@ -233,10 +235,21 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
             }
         };
 
-        window.initFillBtn = function(name){
+        window.findLabel = function(label){
+            return Array.from(document.querySelectorAll(".control-label")).filter((node) =>node.textContent.includes(label))[0]
+        }
+
+        window.findInputAndFill = function(label, personData){
+            let input = findLabel(label).parentElement.querySelector(`input`)
+            input.value = personData
+            input.dispatchEvent(new Event('input'));
+            input.dispatchEvent(new Event('blur'));
+        }
+
+        window.initFillBtn = function(name, birthDate, phone, email, empName, passport, numOfApp){
             
-            var testBtn = document.createElement("div")
-            testBtn.style = `cursor: pointer;
+            var fillBtn = document.createElement("div")
+            fillBtn.style = `cursor: pointer;
                             background:black;
                             position:absolute;
                             width: 100px;
@@ -246,26 +259,39 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
                             font-weight: bold;
                             color: white
                             `
-            testBtn.textContent="FILL"
-            document.body.appendChild(testBtn)
-            testBtn.addEventListener("click", () => {
+            fillBtn.textContent="FILL"
+            document.body.appendChild(fillBtn)
+            fillBtn.addEventListener("click", () => {
                 
-                // fill form inputs
-                // document.querySelector("#m1 > div > fieldset > div:nth-child(5) > div > input").value = name;
-                // document.querySelector("#m1 > div > fieldset > div:nth-child(5) > div > input").dispatchEvent(new Event('input'));
-                // document.querySelector("#m1 > div > fieldset > div:nth-child(5) > div > input").dispatchEvent(new Event('blur'));
-                //ez lehet megbassza az embassy választást
-                //
+                window.findInputAndFill("Name", name)
+                window.findInputAndFill("Phone number", phone)
+                window.findInputAndFill("E-mail address", email)
+                window.findInputAndFill("Passport", passport)
+                document.querySelectorAll(`.outer`).forEach(el=>el.click())
+                if (findLabel("Name of employer")){
+                    window.findInputAndFill("Name of employer", empName)
+                }
+                if(findLabel("Number of applicants")){
+                    window.findInputAndFill("Number of applicants", numOfApp)
+                }
+
+                //hcm emp+diplomatic
+
+
+                
+                //az utso visa ugyre is megcsinalni a kitoltest
+                //stackoverflow, prefix, kevin mindenki - hogyan tudom automatizalni a vpn ujrainditast??
+
             })
-            // setTimeout(()=> testBtn.click(), 5000)
+            // setTimeout(()=> fillBtn.click(), 5000)
 
         }
     });
 
     await page.evaluate((embassy, application, name, birthDate, phone, email, empName, passport, numOfApp) => { //+++/*D adatok*/
-        // initTamperMonkey()
+        initTamperMonkey()
 
-        // initFillBtn(name)
+        initFillBtn(name,birthDate, phone, email, empName, passport, numOfApp)
 
         //after filling, click on START btn
 
