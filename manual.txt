@@ -1,3 +1,56 @@
-először is kapcsoljuk ki a tampermonkeyt a b
+1. lepes: letolteni node js-t
+errol a linkrol erheto el: https://nodejs.org/en/download/
+telepites utan ujra kell inditani a gepet
+ellenorizzuk, hogy sikeresen lett e telepitve a node js, nyissuk meg a Command Promptot, ;s irjuk be a kovetkezot: 
+node -v
+enter utan egy verzioszamot kell latni pl v16.14.0
 
-node install után ujraindítani a gépet
+2. lepes: vscode letoltes
+innen:: https://code.visualstudio.com/
+ez egy fajlszerkeszto
+
+3. lepes: tampermonkey kikapcsolasa
+ehhez a programhoz at kellett irnom a klikkelgetoset. A bongeszoben kapcsoljuk ki a bovitmenyt a biztonsag kedveert. 
+Ha majd hasznalni szeretne, vissza tudja kapcsolni
+
+4. az atkuldott mappat, amiben ez az utmutato is benne van, helyezzuk at valami konnyen megjegyezheto helyre (pl asztalra)
+nyissuk meg vscode-ban (mappat megnyitjuk, jobbklikk ures teruletre, lesz egy opcio, hogy open with vscode)
+nyissuk meg a terminalt (felso menupont -> new terminal)
+irjuk be hogy npm install es nyomjunk egy entert. ezutan elkezdi letolteni amiket le kell. ha ugy tunik, hogy letoltotte, de beakad a terminal, zarjuk be a terminalt es nyissunk egy ujat
+
+5. teszteles
+ha sikerult az npm install, megjelenik egy mappa (node_modules) es 2 fajl (.gitattributes es .gitignore)
+ezeket ne bantsuk
+a terminalba irjuk hogy node fill
+ekkor meg kell nyitnia 4 kozinfo oldalt, ne kattingassunk osszevissza. megjelenik a mar jol ismert START meg STOP gomb. Ezek ugyanugy fognak mukodni mint az elozo programban
+a program magatol kivalassztja a nagykovwetseget es az ugyintezest
+ezek alatt lesz egy fekete FILL gomb is. Jelenleg ezt a program magatol megnyomja 4 masodperccel oldalbetoltes utan. termesztesen ezt ki lehet venni, hogyha a felhasznalo manualisan szeretne. 
+a teszt .csv fajlban 4 ember adata van, a 4 kert ugyintezeshez.
+
+FONTOS: a ho chi minh - visa employment + Diplomatic neha beakad es nem tudja magatol kivalasztani. ilyenkor vagy zarjuk be a bongeszot es inditsuk ujra a programot
+vagy kezzel kivalaszthatjuk a nagykovetseget + ugyintezest es utana ha ranyomunk a FILL gombra ugyanugy ki fogja tolteni a hianyzo adatokat. 
+
+6. excel fajlok elokeszitese a programhoz
+.csv kiterjesztesben mentsuk el a fajlokat.
+mindegy milyen ugyintezes, mehetnek 1 kozos fajlba. Ha viszont rengeteg ember van bent egy fajlban, az lehet befagyasztja a gepet, termeszetesen atool fugg milyen eros a gep.
+ha 100 ember van erdemesebb kulon-kulon kiszedni oket mondjuk 20-asaval. 
+a legelso sor jeloli az adattipust. 
+ha egy ugyintezeshez nem kell peldaul utlevelszam (de ez mindenhol kell) akkor se hagyjuk uresen! mindegy mit irunk be
+de valamit mindenkepp! en a teszt .csv fajlban egy kotojelet raktam. (sampleData mappaban)
+a feldolgozni kivant fajlokat rakjuk a data mappaba (de nem muszaj oda, errol kesobb lesz szo)
+
+7.felhasznalas:
+miutan megvannak a fajlok, meg kell modani a programnak, hogy melyiket olvassa be. a fill.js fajlban talalhato egy ilyen resz: 
+
+var workbook = XLSX.readFile('./sampleData/testData.csv');
+
+./sampleData/testData.csv -> ez mondja meg. a sampleData jeloli a mappat, a testData.csv a fajlt a mappaban 
+
+szoval ha be akrom olvasni a data mappabol az emberek.csv fajlt, ezt kell beirni:}
+
+var workbook = XLSX.readFile('./data/emberek.csv');
+
+MAST NE VALTOZTASSUNK MEG A FAJLBAN.
+nyomjunk egy mentest (ctl+S)
+nyissuk meg a terminalt, es irjuk be, hogy: node fill
+enter, es remelhetoleg el is indult

@@ -4,7 +4,12 @@ var XLSX = require('xlsx')
 var browser;
 
 //reading worksheet
-var workbook = XLSX.readFile('./sampleData/A&B.csv');
+
+//change below that line
+var workbook = XLSX.readFile('./sampleData/testData.csv');
+//change above that line
+
+
 let parsedWorkbook = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
 
 (async () => {
@@ -114,7 +119,7 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
             ////////CHANGE ONLY BELOW THAT LINE
 
             let clickFrequency = 5 //seconds (how often should the program click on "Select date") Recommended is 1 to 5
-            let inactivityTimeout = 10 //seconds (how much should the program wait until going back to the first page, if there is an error with booking a date ). Recommended is more than 7
+            let inactivityTimeout = 8 //seconds (how much should the program wait until going back to the first page, if there is an error with booking a date ). Recommended is more than 7
 
             ////////CHANGE ONLY ABOVE THIS LINE
 
