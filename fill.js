@@ -27,16 +27,19 @@ let parsedWorkbook = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
             email, 
             empName, 
             passport, 
-            numOfApp
+            numOfApp,
+            numOfDocumentsMom,
+            nameEmpAgency,
+            numOfDocumentsLeg
         } = client //destructure
-        openTab(embassy, application, name, birthDate, phone, email, empName, passport, numOfApp)
+        openTab(embassy, application, name, birthDate, phone, email, empName, passport, numOfApp,numOfDocumentsMom,nameEmpAgency,numOfDocumentsLeg)
     })
 
 
 })();
 
 //function containing the 2 scripts
-async function openTab(embassy, application, name, birthDate, phone, email, empName, passport, numOfApp) {
+async function openTab(embassy, application, name, birthDate, phone, email, empName, passport, numOfApp, numOfDocumentsMom,nameEmpAgency,numOfDocumentsLeg) {
     const page = await browser.newPage();
 
     await page.goto('https://konzinfobooking.mfa.gov.hu/home');
@@ -76,8 +79,19 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
             Array.from(document.querySelectorAll(".ng-option")).filter((node)=> {
                 return node.textContent.includes("visa") && node.textContent.includes("family reunification") && !node.textContent.includes("other")
             })[0].click()
-            console.log("yeet")
         }, 1000) 
+    })
+
+    if(application === "visa employment diplomatic") await page.evaluate(()=>{
+        let sel = document.querySelector("#m1 > div > fieldset > div:nth-child(3) > div > ng-select > div > div > div.ng-input > input[type=text]");
+        sel.value = 'Visa application'
+        sel.dispatchEvent(new Event('input'));
+        sel.dispatchEvent(new Event('blur'));
+        setTimeout(()=>{
+            Array.from(document.querySelectorAll(".ng-option")).filter((node)=> {
+                return node.textContent.includes("visa") && node.textContent.includes("employment") && node.textContent.includes("Diplomatic")&& !node.textContent.includes("other")
+            })[0].click()
+        }, 1000)
     })
 
     await page.waitForSelector("#m1 > div > fieldset > div:nth-child(6) > div > div > input")
@@ -246,7 +260,7 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
             input.dispatchEvent(new Event('blur'));
         }
 
-        window.initFillBtn = function(name, birthDate, phone, email, empName, passport, numOfApp){
+        window.initFillBtn = function(name, birthDate, phone, email, empName, passport, numOfApp, numOfDocumentsMom,nameEmpAgency,numOfDocumentsLeg){
             
             var fillBtn = document.createElement("div")
             fillBtn.style = `cursor: pointer;
@@ -254,12 +268,12 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
                             position:absolute;
                             width: 100px;
                             right: 10px;
-                            bottom: 20%;
+                            bottom: 25%;
                             padding-left: 5px;
                             font-weight: bold;
                             color: white
                             `
-            fillBtn.textContent="FILL"
+            fillBtn.textContent="FILL FORM"
             document.body.appendChild(fillBtn)
             fillBtn.addEventListener("click", () => {
                 
@@ -276,61 +290,33 @@ async function openTab(embassy, application, name, birthDate, phone, email, empN
                 }
 
                 //hcm emp+diplomatic
+                if(findLabel("Number of documents in cases of signature leg")){
+                    window.findInputAndFill("Number of documents in cases of signature leg", numOfDocumentsMom)
+                }
 
+                if(findLabel("Name of the employment agency")){
+                    window.findInputAndFill("Name of the employment agency", nameEmpAgency)
+                }
 
-                
-                //az utso visa ugyre is megcsinalni a kitoltest
-                //stackoverflow, prefix, kevin mindenki - hogyan tudom automatizalni a vpn ujrainditast??
+                if(findLabel("Number of documents (legalising signature)")){
+                    window.findInputAndFill("Number of documents (legalising signature)", numOfDocumentsLeg)
+                }
 
             })
-            // setTimeout(()=> fillBtn.click(), 5000)
+            setTimeout(()=> fillBtn.click(), 4000)
+            setTimeout(()=> document.click(), 4000)
 
         }
     });
 
-    await page.evaluate((embassy, application, name, birthDate, phone, email, empName, passport, numOfApp) => { //+++/*D adatok*/
+    await page.evaluate((embassy, application, name, birthDate, phone, email, empName, passport, numOfApp, numOfDocumentsMom,nameEmpAgency,numOfDocumentsLeg) => {
         initTamperMonkey()
 
-        initFillBtn(name,birthDate, phone, email, empName, passport, numOfApp)
+        initFillBtn(name,birthDate, phone, email, empName, passport, numOfApp, numOfDocumentsMom,nameEmpAgency,numOfDocumentsLeg)
 
-        //after filling, click on START btn
-
-        //console.log(embassy, application, name, birthDate, phone, email, empName, passport, numOfApp)
-
-        //if A || B || C
-            //fill name...passport
-            //if(C) fill numOfApp
-        //if D
-            //futtasson le egy teljesen mást
-
-
-            //filling inputs (az a baj h nem lehet normálisan beazonosítani az inputfieldeket so ilyen idiótán kell): 
-            //option A: írni helperfunctionöket ? mint getPassportField() stb
-            // option B: puppeteer xpath? 
-            //option C: kiválasztani az összes INPUTOT vagy LABELT, és LOOPOLNI! csekkolni, hogy mi a címke (name, date of birth) és az alapján kitölteni!
-            
-            //select dropdown
-            //await page.select('#telCountryInput', 'my-value') ?
-            //document.querySelector("#a83bdf569556").classList.add("ng-option-selected", "ng-option-marked")
+        //stackoverflow, prefix, kevin mindenki - hogyan tudom automatizalni a vpn ujrainditast??
         
-        /*
-        -A: hanoi emb employment && B: ho chi minh emb family reuni
-            name
-            date of birth
-            phone num
-            email
-            Name of employer
-            Passport number
-        -C: hanoi emb family reunification
-            +number of applicant
-        -D: ho chi minh emb employment + diplomatic legislation
-            //sok
-        */
-
-        //fill out form
-
-
-    },embassy, application, name, birthDate, phone, email, empName, passport, numOfApp);
+    },embassy, application, name, birthDate, phone, email, empName, passport, numOfApp, numOfDocumentsMom,nameEmpAgency,numOfDocumentsLeg);
 }
 
 

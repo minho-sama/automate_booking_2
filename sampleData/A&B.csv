@@ -1,4 +1,5 @@
-embassy,application,name,birthDate,phone,email,empName,passport,numOfApp
-hanoi,visa employment,minh,30-01-1990,36306564186,minh@gmail.com,Istvan,987654KJ,lorem
-hanoi,visa family, pesto, 17-09-2000,36306966969,pesto@gmail.com,lorem,123456PO,3
-ho chi minh,visa family, pesto, 17.09.2000,36306966969,pesto@gmail.com,lorem,123456PO,lorem
+embassy,application,name,birthDate,phone,email,empName,passport,numOfApp,numOfDocumentsMom,nameEmpAgency,numOfDocumentsLeg
+hanoi,visa employment,adam,30-01-1990,36306564186,adam@gmail.com,Istvan,987654KJ,-,-,-,-
+hanoi,visa family,bob,17-09-2000,36306966969,bob@gmail.com,-,123456PO,3,-,-,-
+ho chi minh,visa family,cecil, 17.09.2000,36306966969,cecil@gmail.com,-,123456PO,-,-,-,-
+ho chi minh,visa employment diplomatic,david,17.09.2000,36306966969,david@gmail.com,-,123456PO,3,5,CocaCola,6
