@@ -13,7 +13,7 @@ ez egy fajlszerkeszto
 ehhez a programhoz at kellett irnom a klikkelgetoset. A bongeszoben kapcsoljuk ki a bovitmenyt a biztonsag kedveert. 
 Ha majd hasznalni szeretne, vissza tudja kapcsolni
 
-4. az atkuldott mappat, amiben ez az utmutato is benne van, helyezzuk at valami konnyen megjegyezheto helyre (pl asztalra)
+ 4. aletoltott mappat, amiben ez az utmutato is benne van, helyezzuk at valami konnyen megjegyezheto helyre (pl asztalra)
 nyissuk meg vscode-ban (mappat megnyitjuk, jobbklikk ures teruletre, lesz egy opcio, hogy open with vscode)
 nyissuk meg a terminalt (felso menupont -> new terminal)
 irjuk be hogy npm install es nyomjunk egy entert. ezutan elkezdi letolteni amiket le kell. ha ugy tunik, hogy letoltotte, de beakad a terminal, zarjuk be a terminalt es nyissunk egy ujat
